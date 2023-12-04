@@ -5,8 +5,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"net/mail"
 	"os"
-	"strings"
 )
 
 type Token struct {
@@ -23,7 +23,7 @@ type Account struct {
 
 func (account *Account) Validate() (map[string]interface{}, bool) {
 
-	if !strings.Contains(account.Email, "@") {
+	if !validateEmail(account.Email) {
 		return u.Message(false, "Email address is not valid!"), false
 	}
 
@@ -42,6 +42,11 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 	}
 
 	return u.Message(false, "Check is passed!"), true
+}
+
+func validateEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
 
 func (account *Account) CreateAccount() map[string]interface{} {

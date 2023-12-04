@@ -3,6 +3,7 @@ package models
 import (
 	u "contactsBook/utils"
 	"fmt"
+	"github.com/dongri/phonenumber"
 	"github.com/jinzhu/gorm"
 )
 
@@ -19,8 +20,8 @@ func (contact *Contact) ValidateContact() (map[string]interface{}, bool) {
 		return u.Message(false, "Name cannot be empty!"), false
 	}
 
-	if contact.Phone == "" {
-		return u.Message(false, "Phone number cannot be empty!"), false
+	if !validatePhoneNumber(contact.Phone) {
+		return u.Message(false, "Invalid phone number!"), false
 	}
 
 	if contact.UserId <= 0 {
@@ -28,6 +29,11 @@ func (contact *Contact) ValidateContact() (map[string]interface{}, bool) {
 	}
 
 	return u.Message(true, "success"), true
+}
+
+func validatePhoneNumber(phone string) bool {
+	phone = phonenumber.Parse(phone, "RU")
+	return phone != ""
 }
 
 func (contact *Contact) CreateContact() map[string]interface{} {

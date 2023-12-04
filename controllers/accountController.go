@@ -22,7 +22,7 @@ var LoginAccount = func(w http.ResponseWriter, r *http.Request) {
 	account := &models.Account{}
 	err := json.NewDecoder(r.Body).Decode(account)
 	if err != nil {
-		u.Respond(w, u.Message(false, "Invalid request!"))
+		u.RespondBadRequest(w, u.Message(false, "Invalid request!"))
 		return
 	}
 	resp := models.LoginAccount(account.Email, account.Password)
